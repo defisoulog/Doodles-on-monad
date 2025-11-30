@@ -1,26 +1,173 @@
+/* Tailwind v4: single import */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --- Base page styles --- */
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #f5f3ff;
+  color: #161325;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ------------------------------------------
+   PENCIL CURSOR (always-on)
+   ------------------------------------------ */
+
+/* Your cursor file: public/cursors/pencil.png  */
+:root {
+  --pencil-cursor: url("/cursors/pencil.png") 23 0, auto;
+}
+
+/* Force pencil everywhere, including hover */
+html,
+body,
+* {
+  cursor: var(--pencil-cursor) !important;
+}
+
+a,
+button,
+[role="button"],
+input,
+textarea,
+select,
+label,
+[class*="cursor-"] {
+  cursor: var(--pencil-cursor) !important;
+}
+
+*::selection {
+  background: rgba(122, 63, 255, 0.2);
+}
+
+/* ------------------------------------------
+   DOODLE WIGGLE
+   ------------------------------------------ */
+@keyframes doodle-wiggle {
+  0% {
+    transform: rotate(-0.4deg) translateY(0px);
+  }
+  50% {
+    transform: rotate(0.4deg) translateY(-1px);
+  }
+  100% {
+    transform: rotate(-0.4deg) translateY(0px);
+  }
+}
+
+.doodle-wiggle {
+  animation: doodle-wiggle 2.5s ease-in-out infinite;
+}
+
+/* ------------------------------------------
+   SUBTLE FLOAT
+   ------------------------------------------ */
+@keyframes subtle-float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.subtle-float {
+  animation: subtle-float 4.5s ease-in-out infinite;
+}
+
+/* ------------------------------------------
+   SNOW
+   ------------------------------------------ */
+
+@keyframes snow-fall {
+  0% {
+    transform: translate3d(var(--drift-start, 0px), -10vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--snow-opacity, 0.85);
+  }
+  100% {
+    transform: translate3d(var(--drift-end, 0px), 110vh, 0) rotate(360deg);
+    opacity: 0.9;
+  }
+}
+
+@keyframes snow-sway {
+  0% {
+    transform: translateX(-8px);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+  100% {
+    transform: translateX(-8px);
+  }
+}
+
+/* Wrapper that fills the whole screen */
+.snow-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30; /* above everything by default */
+}
+
+/* Layers just control opacity; filters applied on flakes */
+.snow-layer[data-depth="back"] {
+  opacity: 0.45;
+  z-index: 30;
+}
+
+.snow-layer[data-depth="front"] {
+  opacity: 0.95;
+  z-index: 31;
+}
+
+/* Base flake */
+.snow-flake {
+  position: absolute;
+  top: -10vh;
+  width: var(--size, 14px);
+  height: var(--size, 14px);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  animation: snow-fall var(--dur, 12s) linear var(--delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+/* public/snow/snow1.png + snow2.png */
+.snow-flake[data-variant="1"] {
+  background-image: url("/snow/snow1.png");
+}
+.snow-flake[data-variant="2"] {
+  background-image: url("/snow/snow2.png");
+}
+
+/* Back layer flakes: slightly blurred */
+.snow-layer[data-depth="back"] .snow-flake {
+  filter: blur(0.5px);
+}
+
+/* Front layer flakes: purple glow so they show over white OS window */
+.snow-layer[data-depth="front"] .snow-flake {
+  filter: drop-shadow(0 0 4px rgba(122, 63, 255, 0.85));
+}
+
+/* Optional sway mix */
+.snow-flake.sway {
+  animation-name: snow-fall, snow-sway;
+  animation-duration: var(--dur, 12s), 5.5s;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
 }
